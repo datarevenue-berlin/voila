@@ -20,6 +20,7 @@ class VoilaTreeHandler(JupyterHandler):
     def initialize(self, **kwargs):
         self.voila_configuration = kwargs['voila_configuration']
         self.allowed_extensions = list(self.voila_configuration.extension_language_mapping.keys()) + ['.ipynb']
+        self.prelaunch_hook = kwargs.get('prelaunch_hook')
 
     def get_template(self, name):
         """Return the jinja template object for a given name"""
@@ -49,6 +50,13 @@ class VoilaTreeHandler(JupyterHandler):
     @web.authenticated
     def get(self, path=''):
         cm = self.contents_manager
+
+        if self.prelaunch_hook:
+            # Allow for preprocessing the notebook.
+            # Can be used to add auth, do custom formatting/standardization
+            # of the notebook, raise exceptions, etc
+            self.log.debug(f"Using prelaunch hook {self.prelaunch_hook.__name__}")
+            self.prelaunch_hook(self, notebook=None)
 
         if cm.dir_exists(path=path):
             if cm.is_hidden(path) and not cm.allow_hidden:

@@ -462,7 +462,8 @@ class Voila(Application):
         )
 
         tree_handler_conf = {
-            'voila_configuration': self.voila_configuration
+            'voila_configuration': self.voila_configuration,
+            'prelaunch_hook': self.prelaunch_hook
         }
         if self.notebook_path:
             handlers.append((
@@ -485,7 +486,8 @@ class Voila(Application):
                     {
                         'nbconvert_template_paths': self.nbconvert_template_paths,
                         'config': self.config,
-                        'voila_configuration': self.voila_configuration
+                        'voila_configuration': self.voila_configuration,
+                        'prelaunch_hook': self.prelaunch_hook
                     }),
             ])
 
