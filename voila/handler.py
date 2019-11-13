@@ -36,6 +36,7 @@ class VoilaHandler(JupyterHandler):
         self.nbconvert_template_paths = kwargs.pop('nbconvert_template_paths', [])
         self.traitlet_config = kwargs.pop('config', None)
         self.voila_configuration = kwargs['voila_configuration']
+        self.prelaunch_hook = kwargs.get('prelaunch_hook')
         # we want to avoid starting multiple kernels due to template mistakes
         self.kernel_started = False
 
@@ -66,6 +67,15 @@ class VoilaHandler(JupyterHandler):
         if not self.notebook:
             return
         self.cwd = os.path.dirname(notebook_path)
+
+        if self.prelaunch_hook:
+            # Allow for preprocessing the notebook.
+            # Can be used to add auth, do custom formatting/standardization
+            # of the notebook, raise exceptions, etc
+            self.prelaunch_hook(self,
+                                notebook=self.notebook,
+                                kernel_name=self.kernel_name,
+                                cwd=self.cwd)
 
         # render notebook to html
         resources = {
