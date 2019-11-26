@@ -74,7 +74,6 @@ class VoilaHandler(JupyterHandler):
             # of the notebook, raise exceptions, etc
             self.prelaunch_hook(self,
                                 notebook=self.notebook,
-                                kernel_name=self.kernel_name,
                                 cwd=self.cwd)
 
         # render notebook to html
