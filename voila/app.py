@@ -20,6 +20,7 @@ import signal
 import socket
 import webbrowser
 
+
 try:
     from urllib.parse import urljoin
     from urllib.request import pathname2url
@@ -233,12 +234,16 @@ class Voila(Application):
                                  cannot be determined reliably by the Jupyter notebook server (proxified
                                  or containerized setups for example)."""))
 
-    prelaunch_hook = Any(default_value=None, allow_none=True,
+    prelaunch_hook = Any(default_value=None, allow_none=True, config=True,
                          help=_("""A function that is called prior to the launch of a 
                                    new kernel instance when a user visits the voila 
                                    webpage. Used for custom user authorization or any 
                                    other necessary pre-launch functions."""))
 
+    custom_handlers = List([], allow_none=True, config=True,
+                           help=_("""A list of custom handlers that voila will serve 
+                           alongside the notebooks. Useful for logout scenarios with 
+                           with IDP authentication"""))
 
     @property
     def display_url(self):
@@ -423,6 +428,10 @@ class Voila(Application):
         self.app.settings.update(self.tornado_settings)
 
         handlers = []
+        for route, handler, options in self.custom_handlers:
+            handlers.append(
+                (url_path_join(self.server_url, route), handler, options)
+            )
 
         handlers.extend([
             (url_path_join(self.server_url, r'/api/kernels/%s' % _kernel_id_regex), KernelHandler),
@@ -490,7 +499,6 @@ class Voila(Application):
                         'prelaunch_hook': self.prelaunch_hook
                     }),
             ])
-
         self.app.add_handlers('.*$', handlers)
         self.listen()
 
