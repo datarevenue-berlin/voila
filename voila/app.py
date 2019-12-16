@@ -245,6 +245,14 @@ class Voila(Application):
                            alongside the notebooks. Useful for logout scenarios with 
                            with IDP authentication"""))
 
+    certfile = Unicode(u'', config=True,
+        help=_("""The full path to an SSL/TLS certificate file.""")
+    )
+
+    keyfile = Unicode(u'', config=True,
+        help=_("""The full path to a private key file for usage with SSL/TLS.""")
+    )
+
     @property
     def display_url(self):
         if self.custom_display_url:
@@ -272,9 +280,7 @@ class Voila(Application):
         return self._url(ip)
 
     def _url(self, ip):
-        # TODO: https / certfile
-        # proto = 'https' if self.certfile else 'http'
-        proto = 'http'
+        proto = 'https' if self.certfile else 'http'
         return "%s://%s:%i%s" % (proto, ip, self.port, self.base_url)
 
     config_file_paths = List(
@@ -289,7 +295,7 @@ class Voila(Application):
         {},
         config=True,
         help=_(
-            'Extra settings to apply to tornado application, e.g. headers, ssl, etc'
+            'Extra settings to apply to tornado application, e.g. headers, etc'
         )
     )
 
@@ -379,6 +385,15 @@ class Voila(Application):
         )
         self.log.info('Storing connection files in %s.' % self.connection_dir)
         self.log.info('Serving static files from %s.' % self.static_root)
+
+        if self.certfile and self.keyfile:
+            self.ssl_options = {
+                'certfile': self.certfile,
+                'keyfile': self.keyfile,
+            }
+        else:
+            self.ssl_options = None
+
 
         self.kernel_spec_manager = KernelSpecManager(
             parent=self
@@ -507,7 +522,7 @@ class Voila(Application):
         self.kernel_manager.shutdown_all()
 
     def listen(self):
-        self.app.listen(self.port)
+        self.app.listen(self.port, ssl_options=self.ssl_options)
         self.log.info('Voila is running at:\n%s' % self.display_url)
 
         if self.open_browser:
