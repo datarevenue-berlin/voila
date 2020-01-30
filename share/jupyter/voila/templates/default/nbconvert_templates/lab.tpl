@@ -2,9 +2,12 @@
 
 {% block codecell %}
 {%- if not cell.outputs -%}
-{%- set extra_class="jp-mod-noOutput" -%}
+{%- set no_output_class="jp-mod-noOutputs" -%}
 {%- endif -%}
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell {{ extra_class }}">
+{%- if not resources.global_content_filter.include_input -%}
+{%- set no_input_class="jp-mod-noInput" -%}
+{%- endif -%}
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell {{ no_output_class }} {{ no_input_class }}">
 {{ super() }}
 </div>
 {%- endblock codecell %}
@@ -54,7 +57,7 @@
 
 {#
   output_prompt doesn't do anything in HTML,
-  because there is a prompt div in each output area (see output block) 
+  because there is a prompt div in each output area (see output block)
  #}
 {% block output_prompt %}
 {% endblock output_prompt %}
@@ -211,7 +214,7 @@ class="unconfined"
 </div>
 {%- endblock -%}
 
-{# 
+{#
  ###############################################################################
  # TODO: how to better handle JavaScript repr?                                 #
  ###############################################################################
@@ -229,8 +232,8 @@ class="unconfined"
 
 {%- block data_widget_state scoped %}
 {% set div_id = uuid4() %}
-{% set datatype_list = output.data | filter_data_type %} 
-{% set datatype = datatype_list[0]%} 
+{% set datatype_list = output.data | filter_data_type %}
+{% set datatype = datatype_list[0]%}
 <div id="{{ div_id }}"></div>
 <div class="output_subarea output_widget_state {{ extra_class }}">
 <script type="{{ datatype }}">
@@ -241,8 +244,8 @@ class="unconfined"
 
 {%- block data_widget_view scoped %}
 {% set div_id = uuid4() %}
-{% set datatype_list = output.data | filter_data_type %} 
-{% set datatype = datatype_list[0]%} 
+{% set datatype_list = output.data | filter_data_type %}
+{% set datatype = datatype_list[0]%}
 <div id="{{ div_id }}"></div>
 <div class="jupyter-widgets jp-OutputArea-output {{ extra_class }}">
 <script type="{{ datatype }}">
@@ -252,7 +255,7 @@ class="unconfined"
 {%- endblock data_widget_view -%}
 
 {%- block footer %}
-{% set mimetype = 'application/vnd.jupyter.widget-state+json'%} 
+{% set mimetype = 'application/vnd.jupyter.widget-state+json'%}
 {% if mimetype in nb.metadata.get("widgets",{})%}
 <script type="{{ mimetype }}">
 {{ nb.metadata.widgets[mimetype] | json_dumps }}

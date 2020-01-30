@@ -1,12 +1,13 @@
 {%- extends 'base.tpl' -%}
-{% from 'mathjax.tpl' import mathjax %}
+{% import "spinner.tpl" as spinner %}
 
 {# this overrides the default behaviour of directly starting the kernel and executing the notebook #}
 {% block notebook_execute %}
 {% endblock notebook_execute %}
 
-
 {%- block html_head_css -%}
+{{ super() }}
+
 <link rel="stylesheet" type="text/css" href="{{resources.base_url}}voila/static/index.css">
 
 {% if resources.theme == 'dark' %}
@@ -30,19 +31,8 @@ a.anchor-link {
 }
 </style>
 
-{{ mathjax() }}
+{{ spinner.css() }}
 
-  <!-- voila spinner -->
-  <style>
-    #loading {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 75vh;
-        color: var(--jp-content-font-color1);
-        font-family: sans-serif;
-    }
-  </style>
 {%- endblock html_head_css -%}
 
 {%- block body -%}
@@ -52,9 +42,9 @@ a.anchor-link {
 {% else %}
 <body class="jp-Notebook theme-light" data-base-url="{{resources.base_url}}voila/">
 {% endif %}
-  <div id="loading">
-    <h2><i class="fa fa-spinner fa-spin" style="font-size:36px;"></i><span id="loading_text">Running {{nb_title}}...</span></h2>
-  </div>
+
+{{ spinner.html() }}
+
 <script>
 var voila_process = function(cell_index, cell_count) {
   var el = document.getElementById("loading_text")

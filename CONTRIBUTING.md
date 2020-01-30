@@ -1,4 +1,14 @@
-# Contributing to voila
+# Contributing to Voilà
+
+Voilà is a subproject of Project Jupyter and subject to the [Jupyter governance](https://github.com/jupyter/governance) and [Code of conduct](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md).
+
+## General Guidelines
+
+For general documentation about contributing to Jupyter projects, see the [Project Jupyter Contributor Documentation](https://jupyter.readthedocs.io/en/latest/contributor/content-contributor.html).
+
+## Community
+
+The Voilà team organizes public video meetings. The schedule for future meetings and minutes of past meetings can be found on our [team compass](https://voila-dashboards.github.io/).
 
 ## Setting up a development environment
 
@@ -21,9 +31,9 @@ cd ..
 python -m pip install -e .
 ```
 
-## Run voila
+## Run Voilà
 
-To start voila, run:
+To start Voilà, run:
 
 ```bash
 voila
@@ -37,7 +47,7 @@ python -m voila
 
 This will open a new browser tab at [http://localhost:8866/](http://localhost:8866/).
 
-When making changes to the frontend side of voila, open a new terminal window and run:
+When making changes to the frontend side of Voilà, open a new terminal window and run:
 
 ```bash
 cd js/
@@ -62,7 +72,7 @@ For Jupyter Server:
 jupyter extension enable voila --sys-prefix
 ```
 
-This makes voila available as a server extension: [http://localhost:8888/voila/tree](http://localhost:8888/voila/tree).
+This makes Voilà available as a server extension: [http://localhost:8888/voila/tree](http://localhost:8888/voila/tree).
 
 ### Notebook extension
 
@@ -79,6 +89,18 @@ Node.js is required and can be installed with conda:
 
 ```bash
 conda install -c conda-forge nodejs
+```
+
+The JupyterLab extension requires the server extension to be enabled. This can be done by running:
+
+```bash
+ jupyter serverextension enable voila --sys-prefix
+```
+
+You can verify if the server extension is enabled by running:
+
+```bash
+jupyter serverextension list
 ```
 
 To install the JupyterLab extension locally:
@@ -132,9 +154,8 @@ Finally, to run the tests:
 python -m pytest
 ```
 
-
 ## Editing templates
 
-The default templates are located in the following folder: [share/jupyter/voila/templates/default](./share/jupyter/voila/templates/default). They are automatically picked up when running voila in development mode.
+The default template files are located in the folder `share/jupyter/voila/templates/default`. They are automatically picked up when running Voilà in development mode.
 
 After editing the templates, reload the browser tab to see the changes.

@@ -1,5 +1,4 @@
 {%- extends 'lab.tpl' -%}
-{% from 'mathjax.tpl' import mathjax %}
 
 {%- block header -%}
 <!DOCTYPE html>
@@ -34,11 +33,16 @@
 {%- endblock html_head_js -%}
 
 {%- block html_head_css -%}
+  <style>
+    /*Hide empty cells*/
+    .jp-mod-noOutputs.jp-mod-noInput {
+      display: none;
+    }
+  </style>
 {%- endblock html_head_css -%}
 {%- endblock html_head -%}
 </head>
 {%- endblock header -%}
-
 
 {% block footer %}
 {% block footer_js %}
