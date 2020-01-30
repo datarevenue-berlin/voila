@@ -7,6 +7,7 @@
 # The full license is in the file LICENSE, distributed with this software.  #
 #############################################################################
 
+import inspect
 import os
 
 import tornado.web
@@ -64,9 +65,14 @@ class VoilaHandler(JupyterHandler):
             # Allow for preprocessing the notebook.
             # Can be used to add auth, do custom formatting/standardization
             # of the notebook, raise exceptions, etc
-            self.prelaunch_hook(self,
-                                notebook=self.notebook,
-                                cwd=self.cwd)
+            if inspect.iscoroutinefunction(self.prelaunch_hook):
+                await self.prelaunch_hook(self,
+                                          notebook=self.notebook,
+                                          cwd=self.cwd)
+            else:
+                self.prelaunch_hook(self,
+                                    notebook=self.notebook,
+                                    cwd=self.cwd)
 
         # render notebook to html
         resources = {
